@@ -82,6 +82,7 @@ class SimplesearchPlugin extends Plugin
     public function onPagesInitialized()
     {
         $page = $this->grav['page'];
+        $param_name = $this->config->get('plugins.simplesearch.param_name') ?: 'query';
 
         $route = null;
         if (isset($page->header()->simplesearch['route'])) {
@@ -101,7 +102,7 @@ class SimplesearchPlugin extends Plugin
 
         /** @var Uri $uri */
         $uri = $this->grav['uri'];
-        $query = $uri->param('query') ?: $uri->query('query');
+        $query = $uri->param($param_name) ?: $uri->query($param_name);
         $route = $this->config->get('plugins.simplesearch.route');
 
         // performance check for route
@@ -288,7 +289,7 @@ class SimplesearchPlugin extends Plugin
         $twig = $this->grav['twig'];
 
         if ($this->query) {
-            $twig->twig_vars['query'] = implode(', ', $this->query);
+            $twig->twig_vars[$this->config->get('plugins.simplesearch.param_name')] = implode(', ', $this->query);
             $twig->twig_vars['search_results'] = $this->collection;
         }
 
